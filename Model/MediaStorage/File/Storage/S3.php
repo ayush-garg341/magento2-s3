@@ -86,6 +86,7 @@ class S3 extends DataObject
         $options = [
             'version' => 'latest',
             'region' => $this->helper->getRegion(),
+            'use_path_style_endpoint' => true, //Add this to helper
             'credentials' => [
                 'key' => $this->helper->getAccessKey(),
                 'secret' => $this->helper->getSecretKey(),
