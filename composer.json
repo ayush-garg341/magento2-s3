@@ -1,5 +1,5 @@
 {
-  "name": "brenofabio/magento2-s3",
+  "name": "brunoslalmeida/magento2-s3",
   "description": "Use Amazon S3 as the file storage backend for your store.",
   "type": "magento2-module",
   "license": "MIT",
@@ -7,6 +7,14 @@
     {
       "name": "Thai Phan",
       "email": "thai@outlook.com"
+    },
+    { 
+      "name": "Breno Fabio (@brenofabio)",
+      "email": "brenofabio@something.com"
+    },
+    {
+      "name": "Bruno Almeida",
+      "email": "brunoslalmeida@gmail.com"
     }
   ],
   "autoload": {
