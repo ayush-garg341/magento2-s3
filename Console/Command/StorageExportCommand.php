@@ -109,10 +109,11 @@ class StorageExportCommand extends Command
                 return 1;
             }
 
+            //Theres no need to fail if already configured
             if ($this->coreFileStorage->getCurrentStorageCode() === \Thai\S3\Model\MediaStorage\File\Storage::STORAGE_MEDIA_S3) {
                 $output->writeln('<error>You are already using S3 as your media file storage backend!</error>');
 
-                return 1;
+                return 0;
             }
 
             $sourceModel = $this->coreFileStorage->getStorageModel();
