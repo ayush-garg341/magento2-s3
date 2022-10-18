@@ -61,6 +61,8 @@ class S3 extends DataObject
      */
     private $objects = [];
 
+    private $configCollection;
+
     public static $scheduledForDeletion = [];
 
     /**
@@ -73,7 +75,8 @@ class S3 extends DataObject
         DataHelper $helper,
         \Magento\MediaStorage\Helper\File\Media $mediaHelper,
         \Magento\MediaStorage\Helper\File\Storage\Database $storageHelper,
-        LoggerInterface $logger
+	    LoggerInterface $logger,
+	    \Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory $configCollection
     ) {
         parent::__construct();
 
@@ -81,6 +84,7 @@ class S3 extends DataObject
         $this->mediaHelper = $mediaHelper;
         $this->storageHelper = $storageHelper;
         $this->logger = $logger;
+        $this->configCollection = $configCollection;
         $this->serializer = $this->getSerializer();
 
         $options = [
@@ -88,11 +92,12 @@ class S3 extends DataObject
             'region' => $this->helper->getRegion(),
             'use_path_style_endpoint' => true, //Add this to helper
             'credentials' => [
-                'key' => $this->helper->getAccessKey(),
-                'secret' => $this->helper->getSecretKey(),
+                'key' => $this->getFieldValue('thai_s3/general/access_key'),
+                'secret' => $this->getFieldValue('thai_s3/general/secret_key'),
             ],
         ];
 
+	    $this->logger->error('credentials'.$this->getFieldValue('thai_s3/general/access_key'));
         if ($this->helper->getEndpointEnabled()) {
             if ($this->helper->getEndpoint()) {
                 $options['endpoint'] = $this->helper->getEndpoint();
@@ -107,6 +112,20 @@ class S3 extends DataObject
 
         // We will delete renamed old files at the end of request.
         register_shutdown_function([$this, 'deleteFilesScheduledForDeletion']);
+    }
+
+    public function getFieldValue($key)
+    {
+        $collection = $this->configCollection->create();
+        $collection->addFieldToFilter("path",['eq'=>$key]);
+        if($collection->count()>0){
+            return $collection->getFirstItem()->getData()['value'];
+        }
+        else
+        {
+            return "";
+        }
+
     }
 
     /**
